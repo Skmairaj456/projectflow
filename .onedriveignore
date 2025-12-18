@@ -1,0 +1,10 @@
+# OneDrive ignore file - prevents OneDrive from syncing these folders
+# This prevents file locking issues with Next.js build files
+
+.next/
+node_modules/
+out/
+.vercel/
+
+
+
