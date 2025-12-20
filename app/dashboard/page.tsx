@@ -6,10 +6,12 @@ import StatsCards from "@/components/dashboard/StatsCards"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Suspense } from "react"
+import { StatsCardsSkeleton, WorkspacesSkeleton, ProjectsSkeleton } from "@/components/dashboard/DashboardSkeleton"
 
 export const revalidate = 10 // Revalidate every 10 seconds
 
-export default async function DashboardPage() {
+async function DashboardContent() {
   const session = await getServerSession(authOptions)
 
   if (!session?.user?.email) {
@@ -27,27 +29,9 @@ export default async function DashboardPage() {
 
   const userId = currentUser.id
 
-  let workspaces: Array<{
-    id: string
-    name: string
-    _count: { projects: number; members: number }
-  }> = []
-  let totalProjects = 0
-  let totalTasks = 0
-  let completedTasks = 0
-  let teamMembers = 0
-  let recentProjects: Array<{
-    id: string
-    name: string
-    workspace: { name: string }
-    _count: { tasks: number }
-  }> = []
-  let hasDbError = false
-  let dbErrorMessage = ""
-
-  try {
-    // Get workspaces where the current user is a member
-    workspaces = await prismaQuery(() =>
+  // Optimize: Fetch workspaces and stats in parallel
+  const [workspaces, stats] = await Promise.all([
+    prismaQuery(() =>
       prisma.workspace.findMany({
         where: {
           members: {
@@ -69,13 +53,36 @@ export default async function DashboardPage() {
           updatedAt: "desc",
         },
       })
-    )
+    ),
+    // Get stats in parallel
+    (async () => {
+      const userWorkspaces = await prismaQuery(() =>
+        prisma.workspace.findMany({
+          where: {
+            members: {
+              some: {
+                userId: userId,
+              },
+            },
+          },
+          select: { id: true },
+        })
+      )
 
-    const workspaceIds = workspaces.map((w) => w.id)
+      const workspaceIds = userWorkspaces.map((w) => w.id)
 
-    if (workspaceIds.length > 0) {
-      // Get statistics for the user's workspaces
-      const [projectCount, taskCount, doneCount, allMembers] = await Promise.all([
+      if (workspaceIds.length === 0) {
+        return {
+          totalProjects: 0,
+          totalTasks: 0,
+          completedTasks: 0,
+          teamMembers: 0,
+          recentProjects: [],
+        }
+      }
+
+      // Fetch all stats in parallel
+      const [projectCount, taskCount, doneCount, allMembers, recentProjects] = await Promise.all([
         prismaQuery(() =>
           prisma.project.count({
             where: {
@@ -112,57 +119,46 @@ export default async function DashboardPage() {
             },
           })
         ),
-      ])
-
-      totalProjects = projectCount
-      totalTasks = taskCount
-      completedTasks = doneCount
-
-      // Count unique team members across all user's workspaces
-      const uniqueUserIds = new Set(allMembers.map((m) => m.userId))
-      teamMembers = uniqueUserIds.size
-
-      recentProjects = await prismaQuery(() =>
-        prisma.project.findMany({
-          where: {
-            workspaceId: { in: workspaceIds },
-          },
-          include: {
-            workspace: true,
-            _count: {
-              select: {
-                tasks: true,
+        prismaQuery(() =>
+          prisma.project.findMany({
+            where: {
+              workspaceId: { in: workspaceIds },
+            },
+            include: {
+              workspace: {
+                select: {
+                  name: true,
+                },
+              },
+              _count: {
+                select: {
+                  tasks: true,
+                },
               },
             },
-          },
-          orderBy: {
-            updatedAt: "desc",
-          },
-          take: 5,
-        })
-      )
-    }
-  } catch (error) {
-    hasDbError = true
-    dbErrorMessage =
-      error instanceof Error
-        ? error.message
-        : "Database is not reachable. Check DATABASE_URL and Postgres."
-    console.error("[DASHBOARD] Database error:", error)
-  }
+            orderBy: {
+              updatedAt: "desc",
+            },
+            take: 5,
+          })
+        ),
+      ])
+
+      const uniqueUserIds = new Set(allMembers.map((m) => m.userId))
+
+      return {
+        totalProjects: projectCount,
+        totalTasks: taskCount,
+        completedTasks: doneCount,
+        teamMembers: uniqueUserIds.size,
+        recentProjects,
+      }
+    })(),
+  ])
 
   return (
-    <div className="space-y-6">
-      {hasDbError && (
-        <div className="rounded-lg border border-amber-500/50 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-900/30 dark:text-amber-50 p-4">
-          <p className="font-semibold">Database not reachable</p>
-          <p className="text-sm mt-1">
-            Please verify your DATABASE_URL in .env and ensure Postgres is running. Showing empty data until the database connection succeeds.
-          </p>
-          <p className="text-xs mt-2 opacity-80 break-all">Error: {dbErrorMessage}</p>
-        </div>
-      )}
-      <div className="flex items-center justify-between">
+    <>
+      <div className="flex items-center justify-between animate-in fade-in duration-300">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Welcome back! 👋
@@ -171,7 +167,7 @@ export default async function DashboardPage() {
             Here&apos;s what&apos;s happening with your projects today.
           </p>
         </div>
-        <Link href="/dashboard/workspaces/new">
+        <Link href="/dashboard/workspaces/new" prefetch>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             New Workspace
@@ -182,10 +178,10 @@ export default async function DashboardPage() {
       {/* Statistics Cards */}
       <StatsCards
         stats={{
-          totalProjects,
-          totalTasks,
-          completedTasks,
-          teamMembers,
+          totalProjects: stats.totalProjects,
+          totalTasks: stats.totalTasks,
+          completedTasks: stats.completedTasks,
+          teamMembers: stats.teamMembers,
         }}
       />
 
@@ -204,6 +200,7 @@ export default async function DashboardPage() {
                 <Link
                   key={workspace.id}
                   href={`/dashboard/workspaces/${workspace.id}`}
+                  prefetch
                   className="block p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <div className="flex items-center justify-between">
@@ -227,16 +224,17 @@ export default async function DashboardPage() {
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Recent Projects
           </h2>
-          {recentProjects.length === 0 ? (
+          {stats.recentProjects.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400">
               No projects yet. Create a workspace and add your first project.
             </p>
           ) : (
             <div className="space-y-3">
-              {recentProjects.map((project) => (
+              {stats.recentProjects.map((project) => (
                 <Link
                   key={project.id}
                   href={`/dashboard/projects/${project.id}`}
+                  prefetch
                   className="block p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <div className="flex items-center justify-between">
@@ -255,6 +253,33 @@ export default async function DashboardPage() {
           )}
         </div>
       </div>
+    </>
+  )
+}
+
+export default async function DashboardPage() {
+  return (
+    <div className="space-y-6">
+      <Suspense
+        fallback={
+          <>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="h-9 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" />
+                <div className="h-6 w-96 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              </div>
+              <div className="h-10 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </div>
+            <StatsCardsSkeleton />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <WorkspacesSkeleton />
+              <ProjectsSkeleton />
+            </div>
+          </>
+        }
+      >
+        <DashboardContent />
+      </Suspense>
     </div>
   )
 }

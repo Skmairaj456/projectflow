@@ -50,7 +50,7 @@ export default async function ProjectsPage() {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -69,7 +69,7 @@ export default async function ProjectsPage() {
               <p className="text-gray-500 dark:text-gray-400 mb-4">
                 No projects yet. Create a workspace and add your first project.
               </p>
-              <Link href="/dashboard/workspaces">
+              <Link href="/dashboard/workspaces" prefetch>
                 <Button>Go to Workspaces</Button>
               </Link>
             </div>
@@ -78,8 +78,13 @@ export default async function ProjectsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <Link key={project.id} href={`/dashboard/projects/${project.id}`}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+            <Link 
+              key={project.id} 
+              href={`/dashboard/projects/${project.id}`}
+              prefetch
+              className="block transition-transform hover:scale-[1.02]"
+            >
+              <Card className="hover:shadow-lg transition-all cursor-pointer h-full">
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <div

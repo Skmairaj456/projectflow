@@ -32,14 +32,16 @@ function SignInForm() {
 
       if (result?.error) {
         toast.error("Invalid email or password")
+        setIsLoading(false)
       } else {
         toast.success("Signed in successfully")
-        router.push(callbackUrl)
-        router.refresh()
+        // Prefetch the dashboard route for instant navigation
+        router.prefetch(callbackUrl)
+        // Use replace instead of push to avoid adding to history
+        router.replace(callbackUrl)
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.")
-    } finally {
       setIsLoading(false)
     }
   }

@@ -78,3 +78,28 @@
   }
 }
 
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Smooth page transitions */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Optimize link transitions */
+  a {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Reduce layout shift */
+  img {
+    content-visibility: auto;
+  }
+}
+

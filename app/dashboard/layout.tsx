@@ -15,12 +15,18 @@ export default function DashboardLayout({
   const { data: session, status } = useSession()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
+  // Show loading only briefly - don't block the entire page
   if (status === "loading") {
-    return <LoadingSpinner />
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   if (!session) {
     redirect("/auth/signin")
+    return null
   }
 
   return (

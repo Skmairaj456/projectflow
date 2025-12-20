@@ -25,6 +25,7 @@ export default function NewWorkspacePage() {
 
       if (response.data.workspace) {
         toast.success("Workspace created successfully!")
+        router.prefetch(`/dashboard/workspaces/${response.data.workspace.id}`)
         router.push(`/dashboard/workspaces/${response.data.workspace.id}`)
       }
     } catch (error: unknown) {
@@ -42,7 +43,7 @@ export default function NewWorkspacePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-300">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Create New Workspace

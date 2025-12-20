@@ -54,7 +54,7 @@ export default async function WorkspacesPage() {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -64,7 +64,7 @@ export default async function WorkspacesPage() {
             Manage your team workspaces and collaborate on projects.
           </p>
         </div>
-        <Link href="/dashboard/workspaces/new">
+        <Link href="/dashboard/workspaces/new" prefetch>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             New Workspace
@@ -79,7 +79,7 @@ export default async function WorkspacesPage() {
               <p className="text-gray-500 dark:text-gray-400 mb-4">
                 No workspaces yet. Create your first workspace to get started.
               </p>
-              <Link href="/dashboard/workspaces/new">
+              <Link href="/dashboard/workspaces/new" prefetch>
                 <Button>Create Workspace</Button>
               </Link>
             </div>
@@ -91,8 +91,10 @@ export default async function WorkspacesPage() {
             <Link
               key={workspace.id}
               href={`/dashboard/workspaces/${workspace.id}`}
+              prefetch
+              className="block transition-transform hover:scale-[1.02]"
             >
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <Card className="hover:shadow-lg transition-all cursor-pointer h-full">
                 <CardHeader>
                   <CardTitle>{workspace.name}</CardTitle>
                   {workspace.description && (

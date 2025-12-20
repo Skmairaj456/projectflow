@@ -32,6 +32,7 @@ export default function NewProjectPage() {
 
       if (response.data.project) {
         toast.success("Project created successfully!")
+        router.prefetch(`/dashboard/projects/${response.data.project.id}`)
         router.push(`/dashboard/projects/${response.data.project.id}`)
       }
     } catch (error: unknown) {
@@ -60,7 +61,7 @@ export default function NewProjectPage() {
   ]
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-300">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Create New Project

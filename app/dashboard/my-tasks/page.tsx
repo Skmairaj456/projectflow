@@ -100,7 +100,7 @@ export default async function MyTasksPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-300">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           My Tasks
@@ -176,7 +176,7 @@ export default async function MyTasksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {overdue.map((task) => (
-                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`}>
+                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`} prefetch className="block transition-transform hover:scale-[1.02]">
                   <div className="relative">
                     <TaskCard
                       task={{
@@ -206,7 +206,7 @@ export default async function MyTasksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {dueToday.map((task) => (
-                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`}>
+                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`} prefetch className="block transition-transform hover:scale-[1.02]">
                   <div className="relative">
                     <TaskCard
                       task={{
@@ -236,7 +236,7 @@ export default async function MyTasksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {dueThisWeek.map((task) => (
-                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`}>
+                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`} prefetch className="block transition-transform hover:scale-[1.02]">
                   <div className="relative">
                     <TaskCard
                       task={{
@@ -265,7 +265,7 @@ export default async function MyTasksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {groupedTasks.other.map((task) => (
-                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`}>
+                <Link key={task.id} href={`/dashboard/projects/${task.projectId}`} prefetch className="block transition-transform hover:scale-[1.02]">
                   <div className="relative">
                     <TaskCard
                       task={{
@@ -294,7 +294,7 @@ export default async function MyTasksPage() {
                 <p className="text-gray-500 dark:text-gray-400 mb-4">
                   No tasks assigned to you yet.
                 </p>
-                <Link href="/dashboard/projects">
+                <Link href="/dashboard/projects" prefetch>
                   <Button>Browse Projects</Button>
                 </Link>
               </div>

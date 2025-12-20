@@ -34,7 +34,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const SidebarContent = (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6 pb-4">
       <div className="flex h-16 shrink-0 items-center justify-between">
-        <Link href="/dashboard" className="text-2xl font-bold text-primary">
+        <Link href="/dashboard" className="text-2xl font-bold text-primary" prefetch>
           ProjectFlow
         </Link>
         {onClose && (
@@ -59,6 +59,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <Link
                       href={item.href}
                       onClick={onClose}
+                      prefetch
                       className={cn(
                         isActive
                           ? "bg-primary/10 text-primary"
