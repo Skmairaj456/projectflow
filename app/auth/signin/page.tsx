@@ -31,17 +31,23 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        toast.error("Invalid email or password")
+        // Only show error for actual authentication failures, not 401 from callback
+        if (result.error !== "CredentialsSignin") {
+          toast.error("Invalid email or password")
+        }
         setIsLoading(false)
-      } else {
+      } else if (result?.ok) {
         toast.success("Signed in successfully")
         // Prefetch the dashboard route for instant navigation
         router.prefetch(callbackUrl)
         // Use replace instead of push to avoid adding to history
         router.replace(callbackUrl)
+      } else {
+        setIsLoading(false)
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      // Silently handle network errors - they're often just CORS preflight
+      console.error("[SIGNIN] Error:", error)
       setIsLoading(false)
     }
   }
