@@ -4,6 +4,7 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import Header from "@/components/dashboard/Header"
 import { useState } from "react"
 
+// Client component - no export const needed for dynamic
 export default function DashboardLayout({
   children,
 }: {

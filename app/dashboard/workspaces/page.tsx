@@ -3,29 +3,15 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { redirect } from "next/navigation"
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 10 // Revalidate every 10 seconds
 
 export default async function WorkspacesPage() {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.email) {
-    redirect("/auth/signin")
-  }
-
-  // Get workspaces where the current user is a member
+  // No authentication required - public access
+  // Get all workspaces (no user filtering)
   const workspaces = await prismaQuery(() =>
     prisma.workspace.findMany({
-      where: {
-        members: {
-          some: {
-            user: {
-              email: session.user?.email as string,
-            },
-          },
-        },
-      },
       include: {
         _count: {
           select: {

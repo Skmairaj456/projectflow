@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { AlertCircle, ExternalLink, LogOut } from "lucide-react"
+import Sidebar from "@/components/dashboard/Sidebar"
+import Header from "@/components/dashboard/Header"
 import DemoDashboardContent from "@/components/demo/DemoDashboardContent"
 
 function DemoDashboard() {
@@ -13,6 +15,7 @@ function DemoDashboard() {
   const router = useRouter()
   const sessionId = searchParams.get("session")
   const [isValid, setIsValid] = useState<boolean | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (!sessionId) {
@@ -61,7 +64,7 @@ function DemoDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Demo Banner */}
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+      <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3 sticky top-0 z-40">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
@@ -91,8 +94,20 @@ function DemoDashboard() {
         </div>
       </div>
 
-      {/* Dashboard Content */}
-      <DemoDashboardContent sessionId={sessionId!} />
+      {/* Same layout as main dashboard */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      
+      <div className="lg:pl-64 flex flex-col min-h-screen">
+        <Header 
+          user={undefined} 
+          onMenuClick={() => setIsSidebarOpen(true)} 
+        />
+        <main className="flex-1 py-6">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <DemoDashboardContent sessionId={sessionId!} />
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

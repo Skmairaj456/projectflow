@@ -4,27 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Calendar, Filter, CheckCircle2, Clock, AlertCircle } from "lucide-react"
 import TaskCard from "@/components/projects/TaskCard"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { redirect } from "next/navigation"
 
+export const dynamic = 'force-dynamic'
 export const revalidate = 10 // Revalidate every 10 seconds
 
 export default async function MyTasksPage() {
-  const session = await getServerSession(authOptions)
-
-  if (!session?.user?.email) {
-    redirect("/auth/signin")
-  }
-
-  // Get all tasks assigned to the current user
+  // No authentication required - public access
+  // Get all tasks (no user filtering)
   const tasks = await prismaQuery(() =>
     prisma.task.findMany({
-      where: {
-        assignee: {
-          email: session.user?.email as string,
-        },
-      },
       include: {
         assignee: {
           select: {

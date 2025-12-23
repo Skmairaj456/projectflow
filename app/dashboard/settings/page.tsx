@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import LoadingSpinner from "@/components/dashboard/LoadingSpinner"
 
+// Client component - no export const needed
 export default function SettingsPage() {
   const { data: session, status } = useSession()
   const { theme, setTheme } = useTheme()

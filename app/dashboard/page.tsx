@@ -6,6 +6,7 @@ import StatsCards from "@/components/dashboard/StatsCards"
 import { Suspense } from "react"
 import { StatsCardsSkeleton, WorkspacesSkeleton, ProjectsSkeleton } from "@/components/dashboard/DashboardSkeleton"
 
+export const dynamic = 'force-dynamic'
 export const revalidate = 10 // Revalidate every 10 seconds
 
 async function DashboardContent() {

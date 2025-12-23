@@ -15,14 +15,6 @@ import {
 import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "My Tasks", href: "/dashboard/my-tasks", icon: CheckSquare },
-  { name: "Projects", href: "/dashboard/projects", icon: FolderKanban },
-  { name: "Workspaces", href: "/dashboard/workspaces", icon: Users },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-]
-
 interface SidebarProps {
   isOpen?: boolean
   onClose?: () => void
@@ -30,11 +22,25 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const isDemo = typeof window !== 'undefined' && pathname.startsWith('/demo')
+  const basePath = isDemo ? '/demo' : '/dashboard'
+  
+  const navigation = [
+    { name: "Dashboard", href: isDemo ? '/demo/dashboard' : "/dashboard", icon: LayoutDashboard },
+    { name: "My Tasks", href: `${basePath}/my-tasks`, icon: CheckSquare },
+    { name: "Projects", href: `${basePath}/projects`, icon: FolderKanban },
+    { name: "Workspaces", href: `${basePath}/workspaces`, icon: Users },
+    { name: "Settings", href: `${basePath}/settings`, icon: Settings },
+  ]
 
   const SidebarContent = (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6 pb-4">
       <div className="flex h-16 shrink-0 items-center justify-between">
-        <Link href="/dashboard" className="text-2xl font-bold text-primary" prefetch>
+        <Link 
+          href={isDemo ? '/demo/dashboard' : '/dashboard'} 
+          className="text-2xl font-bold text-primary" 
+          prefetch
+        >
           ProjectFlow
         </Link>
         {onClose && (
@@ -85,16 +91,29 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </li>
 
           <li className="mt-auto">
-            <button
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-red-600 dark:hover:text-red-400 w-full"
-            >
-              <LogOut
-                className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
-                aria-hidden="true"
-              />
-              Sign out
-            </button>
+            {typeof window !== 'undefined' && window.location.pathname.startsWith('/demo') ? (
+              <Link
+                href="/"
+                className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-red-600 dark:hover:text-red-400 w-full"
+              >
+                <LogOut
+                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
+                  aria-hidden="true"
+                />
+                Exit Demo
+              </Link>
+            ) : (
+              <button
+                onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-red-600 dark:hover:text-red-400 w-full"
+              >
+                <LogOut
+                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
+                  aria-hidden="true"
+                />
+                Sign out
+              </button>
+            )}
           </li>
         </ul>
       </nav>

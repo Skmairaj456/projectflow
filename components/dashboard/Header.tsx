@@ -6,15 +6,17 @@ import ThemeToggle from "./ThemeToggle"
 import { signOut } from "next-auth/react"
 
 interface HeaderProps {
-  user: {
+  user?: {
     name?: string | null
     email?: string | null
     image?: string | null
-  }
+  } | null
   onMenuClick?: () => void
 }
 
 export default function Header({ user, onMenuClick }: HeaderProps) {
+  const displayUser = user || { name: "Demo User", email: "demo@projectflow.com", image: null }
+  
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <Button
@@ -55,37 +57,39 @@ export default function Header({ user, onMenuClick }: HeaderProps) {
 
           <div className="flex items-center gap-x-4">
             <div className="flex items-center gap-x-2">
-              {user.image ? (
+              {displayUser.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   className="h-8 w-8 rounded-full"
-                  src={user.image}
-                  alt={user.name || "User"}
+                  src={displayUser.image}
+                  alt={displayUser.name || "User"}
                 />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-                  {user.name?.charAt(0).toUpperCase() || "U"}
+                  {displayUser.name?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
               <div className="hidden sm:block">
                 <p className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
-                  {user.name || "User"}
+                  {displayUser.name || "User"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 hidden lg:block">
-                  {user.email}
+                  {displayUser.email}
                 </p>
               </div>
             </div>
 
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              title="Sign out"
-              className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
+            {user ? (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                title="Sign out"
+                className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>
