@@ -1,6 +1,7 @@
 // Application constants
-export const APP_NAME = "ProjectFlow"
+export const APP_NAME = "ProjectPilot"
 export const APP_DESCRIPTION = "Enterprise-grade project management with real-time collaboration"
+export const APP_WEBSITE = "https://projectpilot.co.in"
 
 // Task priorities
 export const TASK_PRIORITIES = {

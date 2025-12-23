@@ -7,7 +7,7 @@ import Providers from "@/components/providers/Providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "ProjectFlow - Enterprise Project Management",
+  title: "ProjectPilot - Enterprise Project Management",
   description: "Modern project management tool with real-time collaboration",
 }
 

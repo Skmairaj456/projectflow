@@ -35,7 +35,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6 pb-4">
       <div className="flex h-16 shrink-0 items-center justify-between">
         <Link href="/dashboard" className="text-2xl font-bold text-primary" prefetch>
-          ProjectFlow
+          ProjectPilot
         </Link>
         {onClose && (
           <Button

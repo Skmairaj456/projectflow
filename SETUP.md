@@ -1,6 +1,6 @@
 # Setup Guide
 
-Follow these steps to get the ProjectFlow application running locally.
+Follow these steps to get the ProjectPilot application running locally.
 
 ## Prerequisites
 
