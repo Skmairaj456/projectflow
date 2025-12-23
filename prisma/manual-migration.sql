@@ -1,4 +1,4 @@
--- Manual Migration SQL for ProjectPilot
+-- Manual Migration SQL for ProjectFlow by ProjectPilot
 -- Run this in Supabase SQL Editor: https://supabase.com/dashboard/project/[your-project]/sql/new
 
 -- Create Enums

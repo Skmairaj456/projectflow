@@ -1,4 +1,4 @@
-# ProjectPilot - Enterprise Project Management SaaS
+# ProjectFlow by ProjectPilot - Enterprise Project Management SaaS
 
 A modern, full-stack project management platform built with Next.js 14, TypeScript, Prisma, and PostgreSQL. Features real-time collaboration, task management, team workspaces, and comprehensive analytics.
 
