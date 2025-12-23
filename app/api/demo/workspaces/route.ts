@@ -5,6 +5,7 @@ import { z } from "zod"
 import { generateSlug } from "@/lib/utils"
 
 export const dynamic = 'force-dynamic' // Ensure this route is always rendered dynamically
+export const runtime = 'nodejs' // Ensure Node.js runtime
 
 const createWorkspaceSchema = z.object({
   name: z.string().min(1, "Name is required"),
