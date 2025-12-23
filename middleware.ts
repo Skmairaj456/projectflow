@@ -1,19 +1,10 @@
-import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
-export default withAuth({
-  pages: {
-    signIn: "/auth/signin",
-  },
-})
+// No authentication middleware - all routes are public
+export function middleware(request: any) {
+  return NextResponse.next()
+}
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/api/projects/:path*",
-    "/api/tasks/:path*",
-    "/api/workspaces/:path*",
-    "/api/activities/:path*",
-    "/api/attachments/:path*",
-    "/api/labels/:path*",
-  ],
+  matcher: [],
 }

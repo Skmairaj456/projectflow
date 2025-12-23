@@ -39,7 +39,6 @@ export async function getOrCreateDemoSession(sessionId: string): Promise<DemoSes
   const expiresAt = new Date(Date.now() + DEMO_SESSION_DURATION)
   await prisma.demoSession.create({
     data: {
-      id: sessionId, // Use sessionId as the id
       sessionId,
       expiresAt,
     },

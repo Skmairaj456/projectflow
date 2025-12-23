@@ -3,43 +3,18 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import StatsCards from "@/components/dashboard/StatsCards"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { StatsCardsSkeleton, WorkspacesSkeleton, ProjectsSkeleton } from "@/components/dashboard/DashboardSkeleton"
 
 export const revalidate = 10 // Revalidate every 10 seconds
 
 async function DashboardContent() {
-  const session = await getServerSession(authOptions)
+  // No authentication required - public access
 
-  if (!session?.user?.email) {
-    redirect("/auth/signin")
-  }
-
-  const currentUser = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true }
-  })
-
-  if (!currentUser) {
-    redirect("/auth/signin")
-  }
-
-  const userId = currentUser.id
-
-  // Optimize: Fetch workspaces and stats in parallel
+  // Optimize: Fetch workspaces and stats in parallel (all data, no user filtering)
   const [workspaces, stats] = await Promise.all([
     prismaQuery(() =>
       prisma.workspace.findMany({
-        where: {
-          members: {
-            some: {
-              userId: userId,
-            },
-          },
-        },
         include: {
           _count: {
             select: {
@@ -54,22 +29,15 @@ async function DashboardContent() {
         },
       })
     ),
-    // Get stats in parallel
+    // Get stats in parallel (all data, no user filtering)
     (async () => {
-      const userWorkspaces = await prismaQuery(() =>
+      const allWorkspaces = await prismaQuery(() =>
         prisma.workspace.findMany({
-          where: {
-            members: {
-              some: {
-                userId: userId,
-              },
-            },
-          },
           select: { id: true },
         })
       )
 
-      const workspaceIds = userWorkspaces.map((w) => w.id)
+      const workspaceIds = allWorkspaces.map((w) => w.id)
 
       if (workspaceIds.length === 0) {
         return {
