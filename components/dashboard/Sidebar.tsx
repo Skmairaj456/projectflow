@@ -25,19 +25,29 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isDemo = typeof window !== 'undefined' && pathname.startsWith('/demo')
   const basePath = isDemo ? '/demo' : '/dashboard'
   
+  // Get session ID from URL if in demo mode
+  const getSessionParam = () => {
+    if (!isDemo || typeof window === 'undefined') return ''
+    const urlParams = new URLSearchParams(window.location.search)
+    const session = urlParams.get('session')
+    return session ? `?session=${session}` : ''
+  }
+  
+  const sessionParam = getSessionParam()
+  
   const navigation = [
-    { name: "Dashboard", href: isDemo ? '/demo/dashboard' : "/dashboard", icon: LayoutDashboard },
-    { name: "My Tasks", href: `${basePath}/my-tasks`, icon: CheckSquare },
-    { name: "Projects", href: `${basePath}/projects`, icon: FolderKanban },
-    { name: "Workspaces", href: `${basePath}/workspaces`, icon: Users },
-    { name: "Settings", href: `${basePath}/settings`, icon: Settings },
+    { name: "Dashboard", href: isDemo ? `/demo/dashboard${sessionParam}` : "/dashboard", icon: LayoutDashboard },
+    { name: "My Tasks", href: `${basePath}/my-tasks${sessionParam}`, icon: CheckSquare },
+    { name: "Projects", href: `${basePath}/projects${sessionParam}`, icon: FolderKanban },
+    { name: "Workspaces", href: `${basePath}/workspaces${sessionParam}`, icon: Users },
+    { name: "Settings", href: `${basePath}/settings${sessionParam}`, icon: Settings },
   ]
 
   const SidebarContent = (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 px-6 pb-4">
       <div className="flex h-16 shrink-0 items-center justify-between">
         <Link 
-          href={isDemo ? '/demo/dashboard' : '/dashboard'} 
+          href={isDemo ? `/demo/dashboard${sessionParam}` : '/dashboard'} 
           className="text-2xl font-bold text-primary" 
           prefetch
         >

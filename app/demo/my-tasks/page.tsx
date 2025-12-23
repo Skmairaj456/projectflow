@@ -56,7 +56,7 @@ function DemoMyTasks() {
                     <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">
                       In demo mode, you can explore workspaces and projects.
                     </p>
-                    <Link href={`/demo/dashboard?session=${sessionId}`}>
+                    <Link href={`/demo/dashboard?session=${sessionId}`} prefetch>
                       <Button>Back to Dashboard</Button>
                     </Link>
                   </div>
