@@ -93,9 +93,16 @@ export default async function HomePage() {
             <span className="text-primary font-semibold">Plan, track, and deliver</span> with confidence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            {!session && (
+              <Link href="/demo">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+                  Try Demo Free
+                </Button>
+              </Link>
+            )}
             <Link href={session ? "/dashboard" : "/auth/signup"}>
               <Button size="lg" className="text-lg px-8 py-6">
-                {session ? "Go to Dashboard" : "Start for free"}
+                {session ? "Go to Dashboard" : "Sign Up Free"}
               </Button>
             </Link>
           </div>
@@ -144,11 +151,20 @@ export default async function HomePage() {
             <p className="text-xl mb-8 opacity-90">
               Join thousands of teams already using ProjectFlow to manage their projects.
             </p>
-            <Link href={session ? "/dashboard" : "/auth/signup"}>
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
-                {session ? "Go to Dashboard" : "Create your account"}
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {!session && (
+                <Link href="/demo">
+                  <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+                    Try Demo Free
+                  </Button>
+                </Link>
+              )}
+              <Link href={session ? "/dashboard" : "/auth/signup"}>
+                <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
+                  {session ? "Go to Dashboard" : "Create your account"}
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
