@@ -15,7 +15,20 @@ interface HeaderProps {
 }
 
 export default function Header({ user, onMenuClick }: HeaderProps) {
-  const displayUser = user || { name: "Demo User", email: "demo@projectflow.com", image: null }
+  // Only show "Demo User" if we're explicitly in demo mode (pathname check)
+  const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+  const displayUser = user || (isDemo ? { name: "Demo User", email: "demo@projectflow.com", image: null } : null)
+  
+  // If no user and not in demo mode, show loading or empty state
+  if (!displayUser && !isDemo) {
+    return (
+      <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <div className="flex flex-1 items-center justify-end">
+          <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+        </div>
+      </header>
+    )
+  }
   
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
@@ -79,7 +92,7 @@ export default function Header({ user, onMenuClick }: HeaderProps) {
               </div>
             </div>
 
-            {user ? (
+            {user && !isDemo ? (
               <Button 
                 variant="ghost" 
                 size="icon" 
