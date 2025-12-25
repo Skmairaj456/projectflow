@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const sessionId = req.nextUrl.searchParams.get("sessionId")
-    const { id } = params
 
     if (!sessionId) {
       return NextResponse.json(
@@ -67,4 +67,8 @@ export async function GET(
     )
   }
 }
+
+
+
+
 

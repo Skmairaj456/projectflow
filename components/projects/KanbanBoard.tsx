@@ -158,7 +158,16 @@ export default function KanbanBoard({ project }: KanbanBoardProps) {
 
     // Update in database
     try {
-      const response = await fetch(`/api/tasks/${draggableId}`, {
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${draggableId}`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await fetch(url, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

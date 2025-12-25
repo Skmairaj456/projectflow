@@ -56,9 +56,16 @@ export default function ActivityFeed({ projectId, taskId }: ActivityFeedProps) {
   const fetchActivities = async () => {
     setIsLoading(true)
     try {
-      const url = taskId
-        ? `/api/activities?projectId=${projectId}&taskId=${taskId}`
-        : `/api/activities?projectId=${projectId}`
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/activities?projectId=${projectId}`
+      if (taskId) url += `&taskId=${taskId}`
+      if (sessionId) url += `&sessionId=${sessionId}`
+      
       const response = await axios.get(url)
       setActivities(response.data.activities || [])
     } catch (error) {

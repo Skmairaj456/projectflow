@@ -40,7 +40,16 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
 
   const fetchLabels = async () => {
     try {
-      const response = await axios.get("/api/labels")
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/labels`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await axios.get(url)
       setLabels(response.data.labels || [])
     } catch (error) {
       // Silently handle error - component will show empty state
@@ -53,7 +62,16 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
     }
 
     try {
-      await axios.post(`/api/tasks/${taskId}/labels`, { labelId })
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${taskId}/labels`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      await axios.post(url, { labelId })
       const label = labels.find(l => l.id === labelId)
       if (label) {
         onLabelsChange([...selectedLabels, label])
@@ -66,7 +84,16 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
 
   const handleRemoveLabel = async (labelId: string) => {
     try {
-      await axios.delete(`/api/tasks/${taskId}/labels?labelId=${labelId}`)
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${taskId}/labels?labelId=${labelId}`
+      if (sessionId) url += `&sessionId=${sessionId}`
+      
+      await axios.delete(url)
       onLabelsChange(selectedLabels.filter(l => l.id !== labelId))
       toast.success("Label removed")
     } catch (error: any) {
@@ -82,7 +109,16 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
 
     setIsCreating(true)
     try {
-      const response = await axios.post("/api/labels", {
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/labels`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await axios.post(url, {
         name: newLabelName.trim(),
         color: newLabelColor,
       })

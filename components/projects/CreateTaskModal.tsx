@@ -43,7 +43,16 @@ export default function CreateTaskModal({
     setIsLoading(true)
 
     try {
-      const response = await axios.post("/api/tasks", {
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await axios.post(url, {
         ...formData,
         projectId,
         columnId,

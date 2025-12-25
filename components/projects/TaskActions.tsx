@@ -31,7 +31,16 @@ export default function TaskActions({
 
     setIsDeleting(true)
     try {
-      await axios.delete(`/api/tasks/${taskId}`)
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${taskId}`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      await axios.delete(url)
       toast.success("Task deleted successfully!")
       onDelete()
     } catch (error: any) {
@@ -117,6 +126,10 @@ export default function TaskActions({
     </div>
   )
 }
+
+
+
+
 
 
 

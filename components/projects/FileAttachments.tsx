@@ -43,7 +43,16 @@ export default function FileAttachments({ taskId }: FileAttachmentsProps) {
 
   const fetchAttachments = async () => {
     try {
-      const response = await axios.get(`/api/tasks/${taskId}/attachments`)
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${taskId}/attachments`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await axios.get(url)
       setAttachments(response.data.attachments || [])
     } catch (error) {
       // Silently handle error - component will show empty state
@@ -65,7 +74,16 @@ export default function FileAttachments({ taskId }: FileAttachmentsProps) {
     formData.append("file", file)
 
     try {
-      const response = await axios.post(`/api/tasks/${taskId}/attachments`, formData, {
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${taskId}/attachments`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      const response = await axios.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -86,7 +104,16 @@ export default function FileAttachments({ taskId }: FileAttachmentsProps) {
     if (!confirm("Are you sure you want to delete this file?")) return
 
     try {
-      await axios.delete(`/api/attachments/${attachmentId}`)
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/attachments/${attachmentId}`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      await axios.delete(url)
       setAttachments(attachments.filter(a => a.id !== attachmentId))
       toast.success("File deleted successfully!")
     } catch (error: any) {

@@ -89,7 +89,16 @@ export default function TaskDetailModal({ task, isOpen, onClose, onUpdate }: Tas
 
   const handleSave = async () => {
     try {
-      await axios.patch(`/api/tasks/${task.id}`, {
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${task.id}`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      await axios.patch(url, {
         title,
         description,
       })
@@ -106,7 +115,16 @@ export default function TaskDetailModal({ task, isOpen, onClose, onUpdate }: Tas
 
     setIsDeleting(true)
     try {
-      await axios.delete(`/api/tasks/${task.id}`)
+      const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+      const basePath = isDemo ? '/api/demo' : '/api'
+      const sessionId = isDemo && typeof window !== 'undefined' 
+        ? new URLSearchParams(window.location.search).get('session')
+        : null
+      
+      let url = `${basePath}/tasks/${task.id}`
+      if (sessionId) url += `?sessionId=${sessionId}`
+      
+      await axios.delete(url)
       toast.success("Task deleted successfully")
       document.body.style.overflow = 'unset'
       onClose()
