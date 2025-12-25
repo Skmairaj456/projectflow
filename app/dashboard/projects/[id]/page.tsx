@@ -24,6 +24,7 @@ export default async function ProjectPage({
       where: {
         id: id,
         workspace: {
+          demoSessionId: null, // Exclude demo workspaces
           members: {
             some: {
               user: {
