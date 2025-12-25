@@ -60,7 +60,6 @@ export async function GET(
 
     return NextResponse.json({ workspace })
   } catch (error) {
-    console.error("[DEMO_WORKSPACE_DETAIL_ERROR]", error)
     return NextResponse.json(
       { error: "Failed to fetch workspace" },
       { status: 500 }

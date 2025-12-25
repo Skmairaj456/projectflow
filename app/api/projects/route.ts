@@ -3,6 +3,7 @@ import { prisma, prismaQuery } from "@/lib/prisma"
 import { z } from "zod"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import type { Prisma } from "@prisma/client"
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,7 +23,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const workspaceId = searchParams.get("workspaceId")
 
-    const where: any = {
+    const where: Prisma.ProjectWhereInput = {
       workspace: {
         demoSessionId: null, // Exclude demo workspaces
         members: {

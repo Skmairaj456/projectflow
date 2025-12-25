@@ -194,7 +194,7 @@ export default function KanbanBoard({ project }: KanbanBoardProps) {
     setIsCreateModalOpen(true)
   }, [])
 
-  const handleTaskCreated = useCallback((newTask: any) => {
+  const handleTaskCreated = useCallback((newTask: Task) => {
     setColumns((prevColumns) =>
       prevColumns.map((col) => {
         if (col.id === selectedColumn) {

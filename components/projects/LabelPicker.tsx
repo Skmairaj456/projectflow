@@ -77,8 +77,13 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
         onLabelsChange([...selectedLabels, label])
         toast.success("Label added")
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to add label")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to add label"
+      toast.error(errorMessage)
     }
   }
 
@@ -96,8 +101,13 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
       await axios.delete(url)
       onLabelsChange(selectedLabels.filter(l => l.id !== labelId))
       toast.success("Label removed")
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to remove label")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to remove label"
+      toast.error(errorMessage)
     }
   }
 
@@ -127,8 +137,13 @@ export default function LabelPicker({ taskId, selectedLabels, onLabelsChange }: 
       setNewLabelName("")
       setIsCreating(false)
       await handleAddLabel(newLabel.id)
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to create label")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to create label"
+      toast.error(errorMessage)
       setIsCreating(false)
     }
   }

@@ -46,8 +46,11 @@ export default function SignUpPage() {
         router.push("/dashboard")
         router.refresh()
       }
-    } catch (error: any) {
-      const message = error.response?.data || "An error occurred. Please try again."
+    } catch (error) {
+      const message = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response
+        ? String(error.response.data)
+        : "An error occurred. Please try again."
       toast.error(message)
     } finally {
       setIsLoading(false)
@@ -123,6 +126,11 @@ export default function SignUpPage() {
     </div>
   )
 }
+
+
+
+
+
 
 
 

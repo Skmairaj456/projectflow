@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import toast from "react-hot-toast"
 import axios from "axios"
+import type { Task } from "@/types"
 
 interface QuickTaskInputProps {
   projectId: string
   columnId: string
-  onTaskCreated: (task: any) => void
+  onTaskCreated: (task: Task) => void
   placeholder?: string
 }
 
@@ -54,8 +55,13 @@ export default function QuickTaskInput({
         setIsExpanded(false)
         toast.success("Task created!")
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to create task")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to create task"
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }

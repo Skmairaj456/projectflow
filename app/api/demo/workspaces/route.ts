@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ workspaces })
   } catch (error) {
-    console.error("[DEMO_WORKSPACES_ERROR]", error)
+    
     return NextResponse.json(
       { error: "Failed to fetch workspaces" },
       { status: 500 }
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    console.error("[DEMO_WORKSPACES_CREATE_ERROR]", error)
+    
     const errorMessage = error instanceof Error ? error.message : "Failed to create workspace"
     return NextResponse.json(
       { error: errorMessage },

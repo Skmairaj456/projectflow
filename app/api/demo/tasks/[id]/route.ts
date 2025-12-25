@@ -139,7 +139,6 @@ export async function PATCH(
       )
     }
 
-    console.error("[DEMO_TASKS_UPDATE_ERROR]", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to update task"
     return NextResponse.json(
       { error: errorMessage },
@@ -201,7 +200,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[DEMO_TASKS_DELETE_ERROR]", error)
     return NextResponse.json(
       { error: "Failed to delete task" },
       { status: 500 }

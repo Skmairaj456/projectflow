@@ -16,7 +16,7 @@ function createPrismaClient() {
   })
 
   // Handle connection errors
-  client.$on("error" as never, (e: any) => {
+  client.$on("error" as never, (e: unknown) => {
     console.error("[PRISMA] Database error:", e)
   })
 
@@ -40,9 +40,13 @@ export async function prismaQuery<T>(
 ): Promise<T> {
   try {
     return await queryFn()
-  } catch (error: any) {
-    const errorMessage = error?.message || String(error)
-    const errorCode = (error as any)?.code || (error as any)?.errno
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorCode = error && typeof error === 'object' && 'code' in error 
+      ? error.code 
+      : error && typeof error === 'object' && 'errno' in error
+      ? error.errno
+      : undefined
     const isConnectionError =
       errorMessage.includes("Server has closed the connection") ||
       errorMessage.includes("Connection closed") ||

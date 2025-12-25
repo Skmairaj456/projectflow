@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import toast from "react-hot-toast"
 import axios from "axios"
+import type { Task } from "@/types"
 
 interface CreateTaskModalProps {
   projectId: string
   columnId: string
   isOpen: boolean
   onClose: () => void
-  onTaskCreated: (task: any) => void
+  onTaskCreated: (task: Task) => void
 }
 
 export default function CreateTaskModal({
@@ -70,8 +71,12 @@ export default function CreateTaskModal({
         })
         onClose()
       }
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "Failed to create task"
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to create task"
       toast.error(errorMessage)
     } finally {
       setIsLoading(false)

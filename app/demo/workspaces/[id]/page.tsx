@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Plus, Users, FolderKanban, AlertCircle } from "lucide-react"
 import Sidebar from "@/components/dashboard/Sidebar"
 import Header from "@/components/dashboard/Header"
+import type { DemoWorkspace } from "@/types/demo"
 
 function DemoWorkspaceDetail() {
   const params = useParams()
@@ -15,7 +16,7 @@ function DemoWorkspaceDetail() {
   const router = useRouter()
   const workspaceId = params.id as string
   const sessionId = searchParams.get("session")
-  const [workspace, setWorkspace] = useState<any>(null)
+  const [workspace, setWorkspace] = useState<DemoWorkspace | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -28,8 +29,8 @@ function DemoWorkspaceDetail() {
     // Fetch workspace details
     fetch(`/api/demo/workspaces?sessionId=${sessionId}`)
       .then((res) => res.json())
-      .then((data) => {
-        const foundWorkspace = data.workspaces?.find((w: any) => w.id === workspaceId)
+      .then((data: { workspaces?: DemoWorkspace[] }) => {
+        const foundWorkspace = data.workspaces?.find((w) => w.id === workspaceId)
         if (foundWorkspace) {
           // Fetch full workspace with projects
           fetch(`/api/demo/workspaces/${workspaceId}?sessionId=${sessionId}`)
@@ -133,7 +134,7 @@ function DemoWorkspaceDetail() {
                     </p>
                   ) : (
                     <div className="flex flex-wrap gap-4">
-                      {workspace.members?.map((member: any) => (
+                      {workspace.members?.map((member) => (
                         <div key={member.id} className="flex items-center gap-2">
                           {member.user?.image ? (
                             // eslint-disable-next-line @next/next/no-img-element
@@ -181,7 +182,7 @@ function DemoWorkspaceDetail() {
                     </p>
                   ) : (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {workspace.projects?.map((project: any) => (
+                      {workspace.projects?.map((project) => (
                         <Link
                           key={project.id}
                           href={`/demo/projects/${project.id}?session=${sessionId}`}
@@ -231,4 +232,9 @@ export default function DemoWorkspaceDetailPage() {
     </Suspense>
   )
 }
+
+
+
+
+
 

@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ projects })
   } catch (error) {
-    console.error("[DEMO_PROJECTS_ERROR]", error)
+    
     return NextResponse.json(
       { error: "Failed to fetch projects" },
       { status: 500 }

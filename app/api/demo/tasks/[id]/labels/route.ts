@@ -94,7 +94,6 @@ export async function POST(
       )
     }
 
-    console.error("[DEMO_TASK_LABELS_ADD_ERROR]", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to add label"
     return NextResponse.json(
       { error: errorMessage },
@@ -168,7 +167,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[DEMO_TASK_LABELS_DELETE_ERROR]", error)
     return NextResponse.json(
       { error: "Failed to remove label" },
       { status: 500 }

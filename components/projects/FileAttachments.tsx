@@ -93,8 +93,13 @@ export default function FileAttachments({ taskId }: FileAttachmentsProps) {
       if (fileInputRef.current) {
         fileInputRef.current.value = ""
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to upload file")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to upload file"
+      toast.error(errorMessage)
     } finally {
       setIsUploading(false)
     }
@@ -116,8 +121,13 @@ export default function FileAttachments({ taskId }: FileAttachmentsProps) {
       await axios.delete(url)
       setAttachments(attachments.filter(a => a.id !== attachmentId))
       toast.success("File deleted successfully!")
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to delete file")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to delete file"
+      toast.error(errorMessage)
     }
   }
 

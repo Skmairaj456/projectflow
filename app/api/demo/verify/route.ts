@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ valid })
   } catch (error) {
-    console.error("[DEMO_VERIFY_ERROR]", error)
+    
     return NextResponse.json({ valid: false }, { status: 500 })
   }
 }

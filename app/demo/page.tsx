@@ -33,8 +33,7 @@ export default function DemoPage() {
     }).then(() => {
       // Redirect to demo dashboard
       router.push(`/demo/dashboard?session=${id}`)
-    }).catch((error) => {
-      console.error("Failed to initialize demo:", error)
+    }).catch(() => {
       setIsLoading(false)
     })
   }, [router])
@@ -62,5 +61,10 @@ export default function DemoPage() {
     </div>
   )
 }
+
+
+
+
+
 
 

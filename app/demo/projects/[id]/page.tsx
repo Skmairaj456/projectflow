@@ -10,6 +10,7 @@ import Sidebar from "@/components/dashboard/Sidebar"
 import Header from "@/components/dashboard/Header"
 import KanbanBoard from "@/components/projects/KanbanBoard"
 import ActivityFeed from "@/components/projects/ActivityFeed"
+import type { DemoProject } from "@/types/demo"
 
 function DemoProjectDetail() {
   const params = useParams()
@@ -17,7 +18,7 @@ function DemoProjectDetail() {
   const router = useRouter()
   const projectId = params.id as string
   const sessionId = searchParams.get("session")
-  const [project, setProject] = useState<any>(null)
+  const [project, setProject] = useState<DemoProject | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -30,8 +31,8 @@ function DemoProjectDetail() {
     // Fetch project details
     fetch(`/api/demo/projects?sessionId=${sessionId}`)
       .then((res) => res.json())
-      .then((data) => {
-        const foundProject = data.projects?.find((p: any) => p.id === projectId)
+      .then((data: { projects?: DemoProject[] }) => {
+        const foundProject = data.projects?.find((p) => p.id === projectId)
         if (foundProject) {
           // Fetch full project with columns and tasks
           fetch(`/api/demo/projects/${projectId}?sessionId=${sessionId}`)
@@ -168,4 +169,9 @@ export default function DemoProjectDetailPage() {
     </Suspense>
   )
 }
+
+
+
+
+
 

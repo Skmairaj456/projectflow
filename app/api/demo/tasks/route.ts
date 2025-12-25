@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    console.error("[DEMO_TASKS_CREATE_ERROR]", error)
+    
     const errorMessage = error instanceof Error ? error.message : "Failed to create task"
     return NextResponse.json(
       { error: errorMessage },

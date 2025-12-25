@@ -43,8 +43,13 @@ export default function TaskActions({
       await axios.delete(url)
       toast.success("Task deleted successfully!")
       onDelete()
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to delete task")
+    } catch (error) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data
+        ? String(error.response.data.error)
+        : "Failed to delete task"
+      toast.error(errorMessage)
     } finally {
       setIsDeleting(false)
       setIsOpen(false)

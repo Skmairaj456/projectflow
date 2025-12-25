@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       message: "Demo session created successfully",
     })
   } catch (error) {
-    console.error("[DEMO_INIT_ERROR]", error)
+    
     return NextResponse.json(
       { error: "Failed to initialize demo session" },
       { status: 500 }

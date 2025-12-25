@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ labels })
   } catch (error) {
-    console.error("[DEMO_LABELS_ERROR]", error)
+    
     return NextResponse.json(
       { error: "Failed to fetch labels" },
       { status: 500 }
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    console.error("[DEMO_LABELS_CREATE_ERROR]", error)
+    
     const errorMessage = error instanceof Error ? error.message : "Failed to create label"
     return NextResponse.json(
       { error: errorMessage },

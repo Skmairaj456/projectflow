@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma, prismaQuery } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import type { Prisma } from "@prisma/client"
 
 export async function GET(request: Request) {
   try {
@@ -15,7 +16,7 @@ export async function GET(request: Request) {
     const projectId = searchParams.get("projectId")
     const taskId = searchParams.get("taskId")
 
-    const where: any = {
+    const where: Prisma.ActivityWhereInput = {
       OR: [
         {
           project: {

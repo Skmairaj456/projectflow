@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { isValidDemoSession } from "@/lib/demo"
 import { prisma, prismaQuery } from "@/lib/prisma"
+import type { Prisma } from "@prisma/client"
 
 export const dynamic = 'force-dynamic'
 
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const where: any = {
+    const where: Prisma.ActivityWhereInput = {
       OR: [
         {
           project: {
@@ -71,7 +72,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ activities })
   } catch (error) {
-    console.error("[DEMO_ACTIVITIES_ERROR]", error)
     return NextResponse.json(
       { error: "Failed to fetch activities" },
       { status: 500 }

@@ -91,7 +91,6 @@ export async function POST(
 
     return NextResponse.json({ attachment }, { status: 201 })
   } catch (error) {
-    console.error("[DEMO_ATTACHMENTS_UPLOAD_ERROR]", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to upload file"
     return NextResponse.json(
       { error: errorMessage },
@@ -157,7 +156,6 @@ export async function GET(
 
     return NextResponse.json({ attachments })
   } catch (error) {
-    console.error("[DEMO_ATTACHMENTS_GET_ERROR]", error)
     return NextResponse.json(
       { error: "Failed to fetch attachments" },
       { status: 500 }
