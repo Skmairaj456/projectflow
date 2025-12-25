@@ -5,17 +5,34 @@ import { Plus } from "lucide-react"
 import StatsCards from "@/components/dashboard/StatsCards"
 import { Suspense } from "react"
 import { StatsCardsSkeleton, WorkspacesSkeleton, ProjectsSkeleton } from "@/components/dashboard/DashboardSkeleton"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 10 // Revalidate every 10 seconds
 
 async function DashboardContent() {
-  // No authentication required - public access
+  const session = await getServerSession(authOptions)
 
-  // Optimize: Fetch workspaces and stats in parallel (all data, no user filtering)
+  if (!session?.user?.email) {
+    redirect("/auth/signin")
+  }
+
+  // Optimize: Fetch workspaces and stats in parallel (filtered by user and excluding demo data)
   const [workspaces, stats] = await Promise.all([
     prismaQuery(() =>
       prisma.workspace.findMany({
+        where: {
+          demoSessionId: null, // Exclude demo workspaces
+          members: {
+            some: {
+              user: {
+                email: session.user.email,
+              },
+            },
+          },
+        },
         include: {
           _count: {
             select: {
@@ -30,10 +47,20 @@ async function DashboardContent() {
         },
       })
     ),
-    // Get stats in parallel (all data, no user filtering)
+    // Get stats in parallel (filtered by user and excluding demo data)
     (async () => {
       const allWorkspaces = await prismaQuery(() =>
         prisma.workspace.findMany({
+          where: {
+            demoSessionId: null, // Exclude demo workspaces
+            members: {
+              some: {
+                user: {
+                  email: session.user.email,
+                },
+              },
+            },
+          },
           select: { id: true },
         })
       )

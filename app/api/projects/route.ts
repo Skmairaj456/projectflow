@@ -24,6 +24,7 @@ export async function GET(request: Request) {
 
     const where: any = {
       workspace: {
+        demoSessionId: null, // Exclude demo workspaces
         members: {
           some: {
             user: {
@@ -89,11 +90,12 @@ export async function POST(request: Request) {
     const body = await request.json()
     const validatedData = createProjectSchema.parse(body)
 
-    // Verify workspace exists AND user is a member/owner
+    // Verify workspace exists AND user is a member/owner (exclude demo workspaces)
     const workspace = await prismaQuery(() =>
       prisma.workspace.findFirst({
         where: {
           id: validatedData.workspaceId,
+          demoSessionId: null, // Exclude demo workspaces
           members: {
             some: {
               user: {

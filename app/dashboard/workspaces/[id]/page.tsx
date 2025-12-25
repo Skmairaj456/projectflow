@@ -23,6 +23,7 @@ export default async function WorkspacePage({
     prisma.workspace.findFirst({
       where: {
         id: id,
+        demoSessionId: null, // Exclude demo workspaces
         members: {
           some: {
             user: {

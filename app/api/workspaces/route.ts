@@ -21,6 +21,7 @@ export async function GET() {
     const workspaces = await prismaQuery(() =>
       prisma.workspace.findMany({
         where: {
+          demoSessionId: null, // Exclude demo workspaces
           members: {
             some: {
               user: {

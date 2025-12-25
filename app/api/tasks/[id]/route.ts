@@ -30,13 +30,14 @@ export async function PATCH(
     const body = await request.json()
     const validatedData = updateTaskSchema.parse(body)
 
-    // Verify task exists and user has access via project's workspace membership
+    // Verify task exists and user has access via project's workspace membership (exclude demo)
     const task = await prismaQuery(() =>
       prisma.task.findFirst({
         where: {
           id: id,
           project: {
             workspace: {
+              demoSessionId: null, // Exclude demo workspaces
               members: {
                 some: {
                   user: {
@@ -157,6 +158,7 @@ export async function DELETE(
           id: id,
           project: {
             workspace: {
+              demoSessionId: null, // Exclude demo workspaces
               members: {
                 some: {
                   user: {

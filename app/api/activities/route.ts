@@ -20,6 +20,7 @@ export async function GET(request: Request) {
         {
           project: {
             workspace: {
+              demoSessionId: null, // Exclude demo workspaces
               members: {
                 some: {
                   user: {
@@ -34,6 +35,7 @@ export async function GET(request: Request) {
           task: {
             project: {
               workspace: {
+                demoSessionId: null, // Exclude demo workspaces
                 members: {
                   some: {
                     user: {

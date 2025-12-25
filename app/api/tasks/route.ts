@@ -24,12 +24,13 @@ export async function POST(request: Request) {
     const body = await request.json()
     const validatedData = createTaskSchema.parse(body)
 
-    // Verify project exists and user has access
+    // Verify project exists and user has access (exclude demo workspaces)
     const project = await prismaQuery(() =>
       prisma.project.findFirst({
         where: {
           id: validatedData.projectId,
           workspace: {
+            demoSessionId: null, // Exclude demo workspaces
             members: {
               some: {
                 user: {

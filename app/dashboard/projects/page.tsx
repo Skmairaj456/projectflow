@@ -2,15 +2,35 @@ import { prisma, prismaQuery } from "@/lib/prisma"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 10 // Revalidate every 10 seconds
 
 export default async function ProjectsPage() {
-  // No authentication required - public access
-  // Get all projects (no user filtering)
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user?.email) {
+    redirect("/auth/signin")
+  }
+
+  // Get projects for authenticated user (exclude demo workspaces)
   const projects = await prismaQuery(() =>
     prisma.project.findMany({
+      where: {
+        workspace: {
+          demoSessionId: null, // Exclude demo workspaces
+          members: {
+            some: {
+              user: {
+                email: session.user.email,
+              },
+            },
+          },
+        },
+      },
       include: {
         workspace: {
           select: {
